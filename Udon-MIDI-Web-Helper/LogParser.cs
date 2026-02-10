@@ -149,24 +149,16 @@ namespace Udon_MIDI_Web_Helper
                         while (currentLog.Position < previousFileLength)
                         {
                             bytes[bytesOffset] = (byte)currentLog.ReadByte();
-                            if (bytes[bytesOffset] == lineSeparator[lineSeparator.Length - 1])
+                            if (bytes[bytesOffset] == '\n')
                             {
-                                int tempOffset = bytesOffset;
-                                bool separatorMatch = true;
-                                for (int i = lineSeparator.Length - 1; i >= 0; i--)
-                                    if (tempOffset < 0 || bytes[tempOffset--] != lineSeparator[i])
-                                    {
-                                        separatorMatch = false;
-                                        break;
-                                    }
+                                int length = bytesOffset;
 
-                                if (separatorMatch)
-                                {
-                                    ProcessLogLine(Encoding.UTF8.GetString(bytes, 0, bytesOffset - lineSeparator.Length + 1));
-                                    //Array.Clear(bytes, 0, bytes.Length);
-                                    bytesOffset = 0;
-                                    continue;
-                                }
+                                // Trim trailing \r if present
+                                if (length > 0 && bytes[length - 1] == '\r')
+                                    length--;
+                                ProcessLogLine(Encoding.UTF8.GetString(bytes, 0, length));
+                                bytesOffset = 0;
+                                continue;
                             }
                             bytesOffset++;
                         }
@@ -428,8 +420,10 @@ namespace Udon_MIDI_Web_Helper
             // 2021.01.01 00:00:00 Log        -  [Udon-MIDI-Web-Helper] connectionKey STORE key value public global
             // 2021.01.01 00:00:00 Log        -  [Udon-MIDI-Web-Helper] connectionKey RETRIEVE 3 key wrld_9f212814-2234-4d53-905b-736a84895bc5
             // 2021.01.01 00:00:00 Log        -  [Udon-MIDI-Web-Helper] connectionKey OPENBROWSER https://www.github.com
+            // 2026.02.10 00:52:05 Debug      -  [Udon-MIDI-Web-Helper] READY
             if (line.Length > 58 && line.Substring(34, 22) == "[Udon-MIDI-Web-Helper]")
             {
+                Console.WriteLine("Web Helper log found!");
                 string[] args = line.Substring(57).Split(' ');
                 if (args[0] == connectionKey)
                 {

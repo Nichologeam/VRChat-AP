@@ -52,60 +52,12 @@ namespace Udon_MIDI_Web_Helper
             Reset();
         }
 
-        bool HostnameIsPrivateIPAddress(Uri uri)
-        {
-            if (cachedPrivateHostnames.Contains(uri.DnsSafeHost))
-            {
-                Console.WriteLine("Attempted web request to local IP address blocked!");
-                return true;
-            }
-
-            IPAddress ip;
-            try
-            {
-                if (uri.HostNameType == UriHostNameType.Dns)
-                    ip = Dns.GetHostAddresses(uri.DnsSafeHost)[0];
-                else ip = IPAddress.Parse(uri.DnsSafeHost);
-                string ipString = ip.ToString();
-                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                {
-                    string[] args = ipString.Split('.');
-                    int arg1 = Int32.Parse(args[1]);
-                    if (args[0] == "10" ||
-                        (args[0] == "172" && arg1 >= 16 && arg1 <= 31) ||
-                        (args[0] == "192" && arg1 == 168))
-                    {
-                        cachedPrivateHostnames.Add(uri.DnsSafeHost);
-                        Console.WriteLine("Attempted web request to local IP address blocked!");
-                        return true;
-                    }
-                }
-                else if (ipString.StartsWith("fd"))
-                {
-                    cachedPrivateHostnames.Add(uri.DnsSafeHost);
-                    Console.WriteLine("Attempted web request to local IP address blocked!");
-                    return true;
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error resolving hostname IP address: " + e.Message);
-                return true;
-            }
-            
-            return false;
-        }
-
         public void OpenWebPage(Uri webUri)
         {
             long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             if (currentTimestamp < lastOpenedWebPage + OPEN_WEB_PAGE_TIMEOUT_MS)
                 return;
             lastOpenedWebPage = currentTimestamp;
-
-            // Block all non-internet IP address
-            if (HostnameIsPrivateIPAddress(webUri))
-                return;
 
             if (webUri.Scheme != Uri.UriSchemeHttp && webUri.Scheme != Uri.UriSchemeHttps)
             {
@@ -119,13 +71,6 @@ namespace Udon_MIDI_Web_Helper
 
         public async void GetWebRequest(int connectionID, Uri webUri, bool autoConvertResponse)
         {
-            // Block all non-internet IP address
-            if (HostnameIsPrivateIPAddress(webUri))
-            {
-                midiManager.SendWebRequestFailedResponse(connectionID, WEB_REQUEST_FAILED_ERROR_CODE);
-                return;
-            }
-
             // Block all non http/https traffic
             if (webUri.Scheme != Uri.UriSchemeHttp && webUri.Scheme != Uri.UriSchemeHttps)
             {
@@ -170,13 +115,6 @@ namespace Udon_MIDI_Web_Helper
 
         public async void PostWebRequest(int connectionID, Uri webUri, bool autoConvertResponse, Dictionary<string, string> args)
         {
-            // Block all non-internet IP address
-            if (HostnameIsPrivateIPAddress(webUri))
-            {
-                midiManager.SendWebRequestFailedResponse(connectionID, WEB_REQUEST_FAILED_ERROR_CODE);
-                return;
-            }
-
             // Block all non http/https traffic
             if (webUri.Scheme != Uri.UriSchemeHttp && webUri.Scheme != Uri.UriSchemeHttps)
             {
@@ -245,14 +183,6 @@ namespace Udon_MIDI_Web_Helper
 
         public async void OpenWebSocketConnection(int connectionID, Uri webUri, bool autoConvertResponses)
         {
-            // Block all non-internet IP address
-            if (HostnameIsPrivateIPAddress(webUri))
-            {
-                Console.WriteLine("Closing websocket connection " + connectionID);
-                midiManager.SendWebSocketClosedResponse(connectionID);
-                return;
-            }
-
             if (webUri.Scheme != "ws" && webUri.Scheme != "wss")
             {
                 Console.WriteLine("Error: World attempted to open unsupported URI: " + webUri.Scheme);

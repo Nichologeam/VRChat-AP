@@ -5,7 +5,7 @@ This is a terms-of-service abiding web connectivity helper for VRChat worlds.  T
 
 **This is not a VRChat client modification.**  Client modifications are against the VRChat terms of service and are a **bannable offense**.  Additionally, they are a threat to the social landscape of the platform - it is plagued by numerous fundamental security vulnerabilities which, when exploited en masse, make properly moderating the platform nearly impossible.  And ultimately, the entitlement of treating the platform as open source is an insult to legitimate content creators who have for a very long time put up with VRChat's creative restrictions.  Do not use a modified client.
 
-# [Downloads (.exe and .unitypackage)](http://github.com/DarthShader/Udon-MIDI-Web-Helper/releases)
+# [Downloads (.exe and .unitypackage)](http://github.com/Nichologeam/Udon-MIDI-Web-Helper/releases)
 
 # Requirements
 * [loopMIDI by Tobias Erichsen](https://www.tobias-erichsen.de/software/loopmidi.html) - This software includes a driver for creating virtual MIDI devices, which Windows does not natively support.  loopMIDI only needs to be installed; it does not have to be running for Udon-MIDI-Web-Helper to function.
@@ -26,8 +26,6 @@ This is a terms-of-service abiding web connectivity helper for VRChat worlds.  T
 * If an exploit is discovered which allows a malicious user to print lines directly through the output log with any method other than an Udon powered world, a malicious user might be able to disrupt log parsing.  But they would not be able to perform web requests or access other helper program functions due to a secure key exchange between worlds and the helper program.
 
 # How to use in VRChat worlds
-Requires [UdonSharp](https://github.com/MerlinVR/UdonSharp) - currently requires the latest 1.0 beta version available in the discord server
-
 To add web conectivity to an Udon powered VRChat world, add a single copy of the provided prefab `UdonMIDIWebHandler`.  This contains a single UdonBehaviour through which all web connections and midi data passes.  
 
 To make HTTP GET requests through UdonSharpBehaviours: 

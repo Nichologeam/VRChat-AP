@@ -13,11 +13,16 @@ This requires...
 
 # Troubleshooting
 You must start the Udon-MIDI-Web-Helper.exe *before* you start VRChat. It will not work otherwise. If Udon-MIDI-Web-Helper connects, but the game is not responding to it, restart VRChat with the `--midi=Udon-MIDI-Web-Helper` launch option. Make sure you followed the connection instructions in order. 
+
 Check the VRChat Client for any errors. I've included debug messages for a lot of the server and client communication. If it's nothing obvious, try recreating the issue with the Archipelago Debug Launcher, named ArchipelagoLauncherDebug.exe inside your Archipelago folder.
+
 If the issue is with the VRChat world, I've left World Debugging enabled. Press `Right Shift + ~ + 3` to pull up a logging UI (this may require the `--enable-debug-gui` launch option). Send me a screenshot of the UI, including any errors that may be in it.
+
 Please report bugs if you find them. This is held together with duct tape and a dream.
 
 # Usage
 The physics-enabled cubes on the left are your locations. Place them into the bin on the right of the text client to send them.
+
 The floating cubes on the left are the DeathLink testing cubes. The colored one can be used to toggle DeathLink, while the uncolored one sends a DeathLink.
+
 The floating spheres on the right are a rudementary tracker. They will turn green when you receive their respective Puzzle Unlock items.
